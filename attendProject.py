@@ -5,12 +5,12 @@ import numpy as np
 from datetime import datetime, date
 
 
-path = 'data'
+path = 'database'
 images = []
 classNames = []
 myList = os.listdir(path)
 # print(myList)
-for Tdata in myList:
+for Tdata in myList:  # accessing data of stored in data directory
     currentImg = cv2.imread(f'{path}/{Tdata}')
     images.append(currentImg)
     classNames.append(os.path.splitext(Tdata)[0])
@@ -25,7 +25,7 @@ def findEncodings(images):
     return encodList
 
 
-def makeAttendace(name):
+def makeAttendace(name):  # attendances  updating in csv file
     with open('attendace1.csv', 'r+') as f:
         MyDataList = f.readlines()
         nameList = []
@@ -39,10 +39,10 @@ def makeAttendace(name):
             f.writelines(f'\n{name},{dateString},{dtString}')  # name,date,time
 
 
-encodeListKnown = findEncodings(images)
+encodeListKnown = findEncodings(images)  # encoding img into array format like
 print("encoding is completed !!!!")
 
-VideoCap = cv2.VideoCapture(0)
+VideoCap = cv2.VideoCapture(0)  # video capture from webcam
 
 while True:
     isTrue, img = VideoCap.read()
@@ -50,10 +50,13 @@ while True:
     imgs = cv2.cvtColor(imgs, cv2.COLOR_BGR2RGB)
 
     facesCurFrame = face_recognition.face_locations(imgs)
-    encodeCurFrame = face_recognition.face_encodings(imgs, facesCurFrame)
+    encodeCurFrame = face_recognition.face_encodings(
+        imgs, facesCurFrame)  # encoding frames
 
     for encodeFace, faceLoc in zip(encodeCurFrame, facesCurFrame):
-        matches = face_recognition.compare_faces(encodeListKnown, encodeFace)
+        matches = face_recognition.compare_faces(
+            encodeListKnown, encodeFace)  # comparing faces data
+        # on comparing matching data how similar it is,if it's distancs is less then then good it's maching if not then not well matches ...
         faceDist = face_recognition.face_distance(encodeListKnown, encodeFace)
         # print(faceDist)
         matchIndex = np.argmin(faceDist)
@@ -64,6 +67,7 @@ while True:
             makeAttendace(name)
             y1, x2, y2, x1 = faceLoc
             y1, x2, y2, x1 = y1*4, x2*4, y2*4, x1*4
+            # creating frame where face is detected
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 23), 2)
             cv2.rectangle(img, (x1, y2-35), (x2, y2), (0, 255, 23), cv2.FILLED)
             cv2.putText(img, name, (x1+6, y2-6),
