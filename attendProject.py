@@ -42,7 +42,8 @@ def makeAttendace(name):  # attendances  updating in csv file
 encodeListKnown = findEncodings(images)  # encoding img into array format like
 print("encoding is completed !!!!")
 
-VideoCap = cv2.VideoCapture(0)  # video capture from webcam
+# hey i`m kiran kuyate if incase your camera is not working just change value  0 to number of camera in your system have.. since i have  0 for my laptop camera and second 1 of external camera..
+VideoCap = cv2.VideoCapture(1)  # video capture from webcam
 
 while True:
     isTrue, img = VideoCap.read()
@@ -79,3 +80,5 @@ while True:
     cv2.waitKey(1)
 videoCap.release()
 cv2.destroyAllWindows()
+
+# for stoping program on terminal press 'd' or Ctr + C
